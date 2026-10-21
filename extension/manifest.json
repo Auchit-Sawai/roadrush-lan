@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "RoadRush LAN",
+  "version": "0.1.0",
+  "description": "Offline low-poly arcade motorcycle racing with LAN multiplayer for up to eight riders.",
+  "minimum_chrome_version": "110",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAneeGyu/1uHQXkimsKSMZuBblIB/FMOCrOrEu1lYECyqyMLTOQ3/8xqB6rg0RbL4GW+prCDBJ6GmLlQigf41CcWEtLlg4QFdRPRXsnNiT0D3lu0Ooo37K6Z++5Gi2CvJmtK/aG8lTSFQ4je2ofNhoFAiaQBNp8HK1B3nDyx3bccojhXUyIjIPEm4fAyfIPyify5Pn5ZsFa+/Rjemki1qYK6G/JjxdPO5y8fuAzbYTLz29W8loVe54JDLlnE0yY0uLF3oA0PQ9YPRMu64B3Y0mgJ5nWYvfpPwP+vqCjoDVwrjLakDJpaXFtUNqao5x2EoSBYDaOgQvmEtYIpb2wPkSNwIDAQAB",
+  "permissions": ["storage"],
+  "action": {
+    "default_title": "RoadRush LAN",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

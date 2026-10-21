@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/png" href="./icons/icon32.png">
+  <title>RoadRush LAN</title>
+</head>
+<body>
+  <canvas id="game-canvas" aria-label="RoadRush LAN game view"></canvas>
+
+  <div id="ui">
+    <section id="menu-screen" class="screen menu-screen">
+      <div class="menu-bg" aria-hidden="true"></div>
+
+      <header class="brand">
+        <div class="brand-mark">RR</div>
+        <div class="brand-text">
+          <h1>ROAD<span>RUSH</span></h1>
+          <p>LOW-POLY ARCADE RACING · LAN READY</p>
+        </div>
+        <div class="version-tag">v0.1</div>
+      </header>
+
+      <div class="menu-columns">
+        <div class="panel hero-panel">
+          <div class="eyebrow">TRACK 01 · TWO LAPS</div>
+          <h2>Sunset Ridge</h2>
+          <p class="tagline">Fast sweepers, rolling elevation and traffic you have to thread. Five rivals, rolling traffic and the police on your tail. Punch rivals off their bikes - and stay on yours.</p>
+
+          <button id="start-race" class="primary big" type="button">START RACE</button>
+          <button id="open-lan" class="secondary big" type="button">LAN MULTIPLAYER</button>
+
+          <div class="best-line">
+            <span>YOUR LOCAL BEST</span>
+            <strong id="menu-best">--:--.---</strong>
+          </div>
+
+          <div class="controls-help">
+            <h3>CONTROLS</h3>
+            <div class="key-grid">
+              <span><kbd>W</kbd><kbd>↑</kbd> Accelerate</span>
+              <span><kbd>S</kbd><kbd>↓</kbd> Brake</span>
+              <span><kbd>A</kbd><kbd>←</kbd> Steer left</span>
+              <span><kbd>D</kbd><kbd>→</kbd> Steer right</span>
+              <span><kbd>Shift</kbd> Boost</span>
+              <span><kbd>Q</kbd><kbd>E</kbd> Punch left / right</span>
+              <span><kbd>Esc</kbd> Pause</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel settings-panel">
+          <div class="panel-head">
+            <h2>Rider setup</h2>
+            <span class="save-state" id="save-state">SAVED</span>
+          </div>
+
+          <label class="field" for="nickname">
+            <span>NICKNAME</span>
+            <input id="nickname" type="text" maxlength="20" autocomplete="off" spellcheck="false">
+          </label>
+
+          <div class="field">
+            <span>BIKE COLOUR</span>
+            <div id="color-swatches" class="swatches" role="group" aria-label="Bike colour"></div>
+          </div>
+
+          <label class="field" for="resolution">
+            <span>RENDER RESOLUTION</span>
+            <select id="resolution"></select>
+          </label>
+
+          <label class="field" for="graphics">
+            <span>GRAPHICS PRESET</span>
+            <select id="graphics">
+              <option value="performance">Performance</option>
+              <option value="quality">Quality</option>
+            </select>
+          </label>
+
+          <label class="field" for="difficulty">
+            <span>DIFFICULTY</span>
+            <select id="difficulty">
+              <option value="rookie">Rookie</option>
+              <option value="pro">Pro</option>
+              <option value="legend">Legend</option>
+            </select>
+          </label>
+
+          <label class="toggle-row" for="audio">
+            <span>SOUND EFFECTS</span>
+            <input id="audio" type="checkbox">
+            <span class="toggle-ui" aria-hidden="true"></span>
+          </label>
+
+          <button id="fullscreen-toggle" class="secondary full" type="button">ENTER FULLSCREEN</button>
+          <p class="hint">Settings are stored in the extension (or browser) and applied on the next frame.</p>
+        </div>
+      </div>
+
+      <footer class="menu-footer">
+        <span>Original code, art and sound · Arcade brawling · Offline + trusted LAN</span>
+        <span id="storage-kind"></span>
+      </footer>
+    </section>
+
+    <section id="lan-screen" class="screen lan-screen hidden">
+      <header class="screen-head">
+        <button id="lan-back" class="ghost" type="button">← BACK</button>
+        <h2>LAN MULTIPLAYER</h2>
+        <span class="net-badge" id="lan-net-badge">NOT CONNECTED</span>
+      </header>
+
+      <div class="lan-grid">
+        <div class="panel">
+          <div class="eyebrow">STEP 1</div>
+          <h3>Connect to host</h3>
+          <p class="muted">Both PCs must be on the same trusted network. The host runs <code>Start-LAN-Server.ps1</code>.</p>
+          <label class="field" for="lan-server">
+            <span>SERVER ADDRESS</span>
+            <input id="lan-server" type="text" placeholder="192.168.1.20:8787" autocomplete="off" spellcheck="false">
+          </label>
+          <button id="lan-connect" class="primary" type="button">CONNECT</button>
+          <p id="lan-status" class="status-line">Not connected.</p>
+
+          <div id="lan-actions" class="hidden">
+            <div class="divider"></div>
+            <div class="eyebrow">STEP 2</div>
+            <h3>Create or join a room</h3>
+            <button id="lan-create" class="secondary full" type="button">CREATE ROOM</button>
+            <div class="join-row">
+              <input id="lan-code" type="text" maxlength="4" placeholder="CODE" autocapitalize="characters" autocomplete="off" spellcheck="false">
+              <button id="lan-join" class="secondary" type="button">JOIN ROOM</button>
+            </div>
+          </div>
+
+          <details class="host-help">
+            <summary>Hosting on this PC</summary>
+            <ol>
+              <li>Run <code>Start-LAN-Server.ps1</code> from the extracted <code>LANServer</code> folder.</li>
+              <li>Allow Node.js on <strong>Private networks</strong> only if Windows asks.</li>
+              <li>Read the printed address, for example <code>http://192.168.1.20:8787</code>.</li>
+              <li>Friends open that address in Chrome, or use this screen to connect.</li>
+            </ol>
+          </details>
+        </div>
+
+        <div id="lan-lobby" class="panel hidden">
+          <div class="eyebrow">ROOM</div>
+          <h3 class="room-code" id="lobby-code">----</h3>
+          <p class="muted">Share the code. Up to eight human riders. All players must mark ready.</p>
+          <ul id="lobby-players" class="player-list"></ul>
+          <p id="lobby-status" class="status-line">Waiting for players.</p>
+          <div class="lobby-actions">
+            <button id="lobby-ready" class="primary" type="button">READY</button>
+            <button id="lobby-start" class="primary hidden" type="button">START RACE</button>
+            <button id="lobby-leave" class="secondary" type="button">LEAVE</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="eyebrow">SHARED</div>
+          <h3>Leaderboard</h3>
+          <div id="leaderboard-times" class="leaderboard">
+            <p class="muted small">Connect to the LAN server to load persisted results.</p>
+          </div>
+          <button id="refresh-leaderboard" class="ghost small" type="button">REFRESH</button>
+          <p class="hint">Results are recorded by the server after checkpoint and finish validation. This is a trusted-LAN scoreboard, not a competitive anti-cheat service.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="hud" class="hidden">
+      <div class="hud-top">
+        <div class="hud-box">
+          <span class="label">POSITION</span>
+          <strong id="hud-position">1 / 6</strong>
+        </div>
+        <div class="hud-box center">
+          <span class="label">LAP</span>
+          <strong id="hud-lap">1 / 2</strong>
+        </div>
+        <div class="hud-box right">
+          <span class="label">RACE TIME</span>
+          <strong id="hud-time">00:00.000</strong>
+        </div>
+      </div>
+
+      <div id="countdown" class="countdown hidden">3</div>
+      <div id="announcer" class="announcer"></div>
+      <div id="damage-flash" class="damage-flash"></div>
+      <div id="crash-banner" class="crash-banner hidden">CRASHED · RECOVERING</div>
+
+      <div class="hud-bottom">
+        <div class="progress-zone">
+          <div class="progress-meta"><span>SUNSET RIDGE</span><span id="hud-lap-time">LAP --</span></div>
+          <div class="progress-track"><div id="hud-progress"></div></div>
+        </div>
+        <div class="hud-speed">
+          <strong id="hud-speed">0</strong>
+          <span>KM/H</span>
+        </div>
+        <div class="boost-zone">
+          <div class="progress-meta"><span>BOOST</span><span id="hud-battles">5 RIVALS</span></div>
+          <div class="boost-track"><div id="hud-boost"></div></div>
+          <div class="progress-meta health-meta"><span>HEALTH</span></div>
+          <div class="health-track"><div id="hud-health"></div></div>
+          <div class="best-lap">BEST LAP <span id="hud-best">--:--.---</span></div>
+        </div>
+      </div>
+
+      <div class="hud-hint">
+        <kbd>W</kbd>/<kbd>↑</kbd> throttle · <kbd>S</kbd>/<kbd>↓</kbd> brake · <kbd>A</kbd><kbd>D</kbd>/<kbd>←</kbd><kbd>→</kbd> steer · <kbd>Shift</kbd> boost · <kbd>Q</kbd>/<kbd>E</kbd> punch left/right · <kbd>Esc</kbd> pause
+      </div>
+    </section>
+
+    <section id="pause-screen" class="screen overlay hidden">
+      <div class="panel modal">
+        <div class="eyebrow">RACE CONTROL</div>
+        <h2>Paused</h2>
+        <p class="muted" id="pause-subtitle">The timer is stopped while the race is paused.</p>
+        <div class="modal-actions">
+          <button id="resume-race" class="primary" type="button">RESUME</button>
+          <button id="pause-restart" class="secondary" type="button">RESTART RACE</button>
+          <button id="quit-menu" class="secondary" type="button">QUIT TO MENU</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="results-screen" class="screen overlay hidden">
+      <div class="panel modal results-modal">
+        <div class="results-head">
+          <div>
+            <div class="eyebrow" id="results-eyebrow">RACE COMPLETE</div>
+            <h2 id="results-title">2nd Place</h2>
+          </div>
+          <div class="results-badge" id="results-badge">2</div>
+        </div>
+        <p class="muted" id="results-subtitle">Sunset Ridge · Two laps</p>
+        <div class="result-stats">
+          <div><span>TOTAL TIME</span><strong id="results-time">--:--.---</strong></div>
+          <div><span>BEST LAP</span><strong id="results-lap">--:--.---</strong></div>
+          <div><span>TOP SPEED</span><strong id="results-speed">0 km/h</strong></div>
+          <div><span>CRASHES</span><strong id="results-crashes">0</strong></div>
+          <div><span>TAKEDOWNS</span><strong id="results-takedowns">0</strong></div>
+        </div>
+        <div class="standings-wrap">
+          <table class="standings">
+            <thead><tr><th>POS</th><th>RIDER</th><th>TIME / STATUS</th></tr></thead>
+            <tbody id="results-standings"></tbody>
+          </table>
+        </div>
+        <p id="results-note" class="status-line"></p>
+        <div class="modal-actions">
+          <button id="results-restart" class="primary" type="button">RACE AGAIN <kbd>R</kbd></button>
+          <button id="results-menu" class="secondary" type="button">MAIN MENU</button>
+          <button id="results-lan" class="secondary hidden" type="button">BACK TO LOBBY</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast" class="toast hidden" role="status"></div>
+  </div>
+
+  <script type="module" src="../src/main.js"></script>
+</body>
+</html>

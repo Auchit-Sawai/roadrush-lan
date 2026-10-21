@@ -1,0 +1,13 @@
+node_modules/
+dist/
+release/
+server/data/*
+!server/data/.gitkeep
+*.log
+*.zip
+.DS_Store
+Thumbs.db
+test-results/
+scripts/.cache/
+screenshots/
+site/
